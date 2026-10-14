@@ -1,0 +1,18 @@
+{
+  "name": "Zapatos de Temporada - Catálogo Móvil",
+  "short_name": "Calzados",
+  "description": "Venta de calzado con catálogo y pedidos directos a WhatsApp",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#111827",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/shoe-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

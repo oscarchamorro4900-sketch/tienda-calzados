@@ -15,7 +15,9 @@ export function CartDrawer({
   if (!isOpen) return null;
 
   const currency = storeConfig.currency || "$";
-  const whatsappNumber = storeConfig.whatsappNumber || "1234567890";
+  const OFFICIAL_WHATSAPP = "573176535909";
+  const rawNumber = storeConfig.whatsappNumber || OFFICIAL_WHATSAPP;
+  const whatsappNumber = (!rawNumber || rawNumber === "1234567890" || rawNumber.includes("573001234567")) ? OFFICIAL_WHATSAPP : rawNumber;
 
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + (Number(item.price) * item.quantity),
@@ -45,7 +47,7 @@ export function CartDrawer({
     message += `📍 *Por favor confírmame disponibilidad y datos para el pago y envío.*`;
 
     const encodedMessage = encodeURIComponent(message);
-    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '') || OFFICIAL_WHATSAPP;
     const url = `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
     window.open(url, '_blank');
   };

@@ -45,11 +45,13 @@ export default function App() {
   });
 
   // 2. Estado de Configuración de la Tienda
+  const OFFICIAL_WHATSAPP = "573176535909";
+
   const [storeConfig, setStoreConfig] = useState(() => {
     const defaultEnvConfig = {
       storeName: "Calzados Temporada",
       tagline: "Venta de calzado exclusivo con pedidos por WhatsApp",
-      whatsappNumber: "573001234567", // Número de Colombia configurable
+      whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || OFFICIAL_WHATSAPP,
       currency: "COP $",
       geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
       adminPin: import.meta.env.VITE_ADMIN_PASSWORD || "CalzadosAdmin2026*",
@@ -65,8 +67,9 @@ export default function App() {
           parsed.adminPin = defaultEnvConfig.adminPin;
         }
         parsed.currency = "COP $";
-        if (parsed.whatsappNumber?.startsWith("521")) {
-          parsed.whatsappNumber = "573001234567";
+        // Si el número guardado es el antiguo número de prueba, actualizar al número oficial
+        if (!parsed.whatsappNumber || parsed.whatsappNumber.includes("573001234567") || parsed.whatsappNumber.startsWith("521") || parsed.whatsappNumber === "1234567890") {
+          parsed.whatsappNumber = OFFICIAL_WHATSAPP;
         }
         // Si no están en localStorage, rescatar desde variables de entorno
         if (!parsed.supabaseUrl && defaultEnvConfig.supabaseUrl) {
@@ -311,7 +314,7 @@ export default function App() {
   const handleDirectWhatsApp = (shoe, chosenSize = null) => {
     const sizeToUse = chosenSize || shoe.sizes?.[0] || 40;
     const currency = storeConfig.currency || "$";
-    const cleanNumber = (storeConfig.whatsappNumber || "1234567890").replace(/[^0-9]/g, '');
+    const cleanNumber = (storeConfig.whatsappNumber || OFFICIAL_WHATSAPP).replace(/[^0-9]/g, '') || OFFICIAL_WHATSAPP;
 
     const message = `👟 *¡HOLA! ME INTERESA ESTE CALZADO DE TU TIENDA* 👟\n\n` +
       `📌 *Producto:* ${shoe.name}\n` +
@@ -359,7 +362,7 @@ export default function App() {
 
   // Contacto general de WhatsApp
   const handleContactWhatsApp = () => {
-    const cleanNumber = (storeConfig.whatsappNumber || "1234567890").replace(/[^0-9]/g, '');
+    const cleanNumber = (storeConfig.whatsappNumber || OFFICIAL_WHATSAPP).replace(/[^0-9]/g, '') || OFFICIAL_WHATSAPP;
     const msg = encodeURIComponent(
       `¡Hola! Estoy visitando el catálogo de ${storeConfig.storeName} y tengo una consulta sobre sus calzados.`
     );

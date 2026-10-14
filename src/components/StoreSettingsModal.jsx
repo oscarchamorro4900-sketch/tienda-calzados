@@ -14,13 +14,18 @@ export function StoreSettingsModal({
 }) {
   if (!isOpen) return null;
 
+  const OFFICIAL_WHATSAPP = "573176535909";
+  const currentWhatsApp = (!storeConfig.whatsappNumber || storeConfig.whatsappNumber.includes("573001234567") || storeConfig.whatsappNumber.startsWith("521") || storeConfig.whatsappNumber === "1234567890")
+    ? OFFICIAL_WHATSAPP
+    : storeConfig.whatsappNumber;
+
   const [form, setForm] = useState({
-    storeName: storeConfig.storeName || "Calzados Express",
+    storeName: storeConfig.storeName || "Calzados Temporada",
     tagline: storeConfig.tagline || "Venta de calzado con pedidos a WhatsApp",
-    whatsappNumber: storeConfig.whatsappNumber || "5215512345678",
-    currency: storeConfig.currency || "$",
+    whatsappNumber: currentWhatsApp,
+    currency: storeConfig.currency || "COP $",
     geminiApiKey: storeConfig.geminiApiKey || "",
-    adminPin: storeConfig.adminPin || "2026",
+    adminPin: storeConfig.adminPin || "CalzadosAdmin2026*!A",
     supabaseUrl: storeConfig.supabaseUrl || "",
     supabaseAnonKey: storeConfig.supabaseAnonKey || ""
   });

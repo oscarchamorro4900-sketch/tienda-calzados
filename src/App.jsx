@@ -491,8 +491,8 @@ export default function App() {
           totalResults={filteredShoes.length}
         />
 
-        {/* Product Catalog Grid */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        {/* Product Catalog Grid (Fila de 2 en celulares estilo QUEST) */}
+        <section className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 mt-5 sm:mt-8">
           
           {filteredShoes.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80 shadow-sm max-w-lg mx-auto">
@@ -519,15 +519,15 @@ export default function App() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
               {filteredShoes.map((shoe) => (
                 <ShoeCard
                   key={shoe.id}
                   shoe={shoe}
                   storeConfig={storeConfig}
                   onViewDetails={(s) => setDetailModalShoe(s)}
-                  onAddToCart={(s) => handleAddToCart(s)}
-                  onDirectWhatsApp={(s) => handleDirectWhatsApp(s)}
+                  onAddToCart={(s, size) => handleAddToCart(s, size)}
+                  onDirectWhatsApp={(s, size) => handleDirectWhatsApp(s, size)}
                   isSellerMode={isSellerMode}
                   onEditShoe={(s) => setEditingShoe(s)}
                 />
@@ -539,38 +539,36 @@ export default function App() {
 
       </main>
 
-      {/* Floating Action Bar for Mobile Convenience */}
-      <div className="fixed bottom-4 left-4 right-4 z-30 md:hidden flex items-center justify-between gap-2 p-2 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/80 shadow-2xl">
-        {isSellerMode ? (
+      {/* Botón Flotante Redondo de WhatsApp (Estilo QUEST de la referencia) */}
+      {!isSellerMode && (
+        <button
+          onClick={handleContactWhatsApp}
+          className="fixed bottom-5 right-5 z-40 w-13 h-13 sm:w-14 sm:h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition-all border-2 border-white"
+          title="Hablar por WhatsApp con un asesor"
+        >
+          <MessageCircle className="w-7 h-7 fill-white" />
+        </button>
+      )}
+
+      {/* Barra Flotante de Acciones Rápidas en Modo Administrador */}
+      {isSellerMode && (
+        <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden flex items-center justify-between gap-2 p-2 bg-slate-900/95 backdrop-blur-md rounded-2xl border border-slate-700/80 shadow-2xl">
           <button
             onClick={() => setIsUploaderOpen(true)}
-            className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95"
+            className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95"
           >
             <Sparkles className="w-4 h-4 fill-current" />
             <span>Subir Fotos Galería</span>
           </button>
-        ) : (
           <button
-            onClick={handleContactWhatsApp}
-            className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95"
+            onClick={() => setIsPriceManagerOpen(true)}
+            className="py-2.5 px-3 rounded-xl bg-slate-800 text-amber-400 border border-slate-700 font-bold text-xs flex items-center gap-1 active:scale-95"
           >
-            <MessageCircle className="w-4 h-4 fill-current" />
-            <span>Pedir Asesoría por WhatsApp</span>
+            <DollarSign className="w-4 h-4" />
+            <span>Precios</span>
           </button>
-        )}
-
-        <button
-          onClick={() => setIsCartOpen(true)}
-          className="relative p-2.5 rounded-xl bg-slate-800 text-white border border-slate-700 flex items-center justify-center active:scale-95"
-        >
-          <ShoppingBag className="w-5 h-5 text-emerald-400" />
-          {cartItems.length > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">
-              {cartItems.reduce((acc, i) => acc + i.quantity, 0)}
-            </span>
-          )}
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-slate-900 text-white border-t border-slate-800 py-10 px-4 sm:px-6 lg:px-8">

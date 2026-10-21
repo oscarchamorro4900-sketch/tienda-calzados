@@ -11,7 +11,12 @@ export function PriceManagerModal({
 }) {
   if (!isOpen) return null;
 
-  const [activeCurrency, setActiveCurrency] = useState(storeConfig.currency || "$");
+  const [activeCurrency, setActiveCurrency] = useState(() => {
+    const cur = storeConfig.currency;
+    if (!cur || cur === "COP $" || cur === "COP" || cur === "$") return "$";
+    return cur;
+  });
+  const displaySymbol = activeCurrency.includes('$') ? '$' : activeCurrency.trim();
   const [editedPrices, setEditedPrices] = useState(() => {
     const map = {};
     shoes.forEach((shoe) => {
@@ -188,11 +193,11 @@ export function PriceManagerModal({
                 onChange={(e) => setActiveCurrency(e.target.value)}
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-amber-500"
               >
-                <option value="$">$ (Dólares / Pesos)</option>
+                <option value="$">$ (Formato Limpio Estándar)</option>
+                <option value="COP $">COP $ (Pesos Colombianos)</option>
+                <option value="MXN $">MXN $ (Pesos Mexicanos)</option>
                 <option value="S/.">S/. (Soles Perú)</option>
                 <option value="€">€ (Euros)</option>
-                <option value="MXN $">MXN $ (Pesos Mexicanos)</option>
-                <option value="COP $">COP $ (Pesos Colombianos)</option>
                 <option value="CLP $">CLP $ (Pesos Chilenos)</option>
                 <option value="Bs.">Bs. (Bolívares / Bolivianos)</option>
               </select>
@@ -282,35 +287,35 @@ export function PriceManagerModal({
                       </div>
                     </div>
 
-                    {/* Inputs de Precios */}
-                    <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
+                    {/* Inputs de Precios con Diseño Anti-Superposición */}
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0 w-full sm:w-auto justify-between sm:justify-start">
                       {/* Precio de Venta */}
-                      <div>
-                        <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-tight mb-0.5">
+                      <div className="flex-1 sm:flex-initial">
+                        <span className="block text-[10px] font-bold text-slate-600 uppercase tracking-tight mb-1">
                           Precio Venta
                         </span>
-                        <div className="relative">
-                          <span className="absolute left-2.5 top-2 text-xs font-bold text-slate-400">
-                            {activeCurrency}
+                        <div className="flex items-center rounded-xl border border-slate-300 bg-white overflow-hidden focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500 shadow-xs">
+                          <span className="px-2.5 py-1.5 text-xs font-black text-slate-500 bg-slate-100 border-r border-slate-200 select-none shrink-0">
+                            {displaySymbol}
                           </span>
                           <input
                             type="number"
                             step="any"
                             value={edit.price}
                             onChange={(e) => handlePriceChange(shoe.id, e.target.value)}
-                            className="w-28 pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-extrabold text-slate-900 focus:ring-2 focus:ring-amber-500"
+                            className="w-full sm:w-28 px-2 py-1.5 bg-white text-xs sm:text-sm font-black text-slate-900 outline-none"
                           />
                         </div>
                       </div>
 
                       {/* Precio Original (Tachado) */}
-                      <div>
-                        <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tight mb-0.5">
+                      <div className="flex-1 sm:flex-initial">
+                        <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-tight mb-1">
                           Original (Tachado)
                         </span>
-                        <div className="relative">
-                          <span className="absolute left-2.5 top-2 text-xs text-slate-400">
-                            {activeCurrency}
+                        <div className="flex items-center rounded-xl border border-slate-300 bg-white overflow-hidden focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500 shadow-xs">
+                          <span className="px-2.5 py-1.5 text-xs font-bold text-slate-400 bg-slate-50 border-r border-slate-200 select-none shrink-0">
+                            {displaySymbol}
                           </span>
                           <input
                             type="number"
@@ -318,15 +323,15 @@ export function PriceManagerModal({
                             placeholder="Opcional"
                             value={edit.originalPrice}
                             onChange={(e) => handleOriginalPriceChange(shoe.id, e.target.value)}
-                            className="w-24 pl-7 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500 focus:ring-2 focus:ring-amber-500"
+                            className="w-full sm:w-28 px-2 py-1.5 bg-white text-xs sm:text-sm font-semibold text-slate-700 outline-none placeholder:text-slate-300"
                           />
                         </div>
                       </div>
 
                       {/* Badge de Descuento */}
-                      <div className="w-16 text-center">
+                      <div className="shrink-0 self-end pb-1 sm:pb-0 text-center min-w-[55px]">
                         {edit.discount ? (
-                          <span className="inline-block px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 border border-rose-200">
+                          <span className="inline-block px-2 py-1 rounded-lg text-[10px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap shadow-xs">
                             {edit.discount}
                           </span>
                         ) : (

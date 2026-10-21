@@ -303,7 +303,7 @@ export function EditShoeModal({
                 type="text"
                 value={form.seasonBadge}
                 onChange={(e) => setForm({ ...form, seasonBadge: e.target.value })}
-                placeholder="ej: 🔥 Tendencia 2026"
+                placeholder="ej: 🔥 Tendencia 2027"
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500"
               />
             </div>

@@ -426,7 +426,7 @@ export function AdminUploaderModal({
                         type="text"
                         value={currentShoe.seasonBadge || ""}
                         onChange={(e) => updateCurrentShoe('seasonBadge', e.target.value)}
-                        placeholder="ej: 🔥 Tendencia 2026"
+                        placeholder="ej: 🔥 Tendencia 2027"
                         className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>

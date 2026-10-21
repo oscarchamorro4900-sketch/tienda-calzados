@@ -1,18 +1,21 @@
-import React, { useState, useMemo } from 'react';
-import { MessageCircle, ShoppingBag, Eye, Star, Sparkles, Edit3 } from 'lucide-react';
+import React, { useState, useMemo, memo } from 'react';
+import { MessageCircle, ShoppingBag, Sparkles, Edit3 } from 'lucide-react';
 import { formatPrice } from '../utils/formatCurrency';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
-export function ShoeCard({
+function ShoeCardComponent({
   shoe,
   storeConfig,
   onViewDetails,
   onAddToCart,
   onDirectWhatsApp,
   isSellerMode,
-  onEditShoe
+  onEditShoe,
+  priority = false
 }) {
   const currency = storeConfig.currency || "$";
-  const primaryImage = shoe.images?.[0] || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80";
+  const rawImage = shoe.images?.[0] || "https://images.unsplash.com/photo-1542291026-7eec264c27ff";
+  const primaryImage = optimizeImageUrl(rawImage, 450, 75);
 
   // Tallas disponibles reales en este calzado
   const availableSizes = useMemo(() => {
@@ -24,7 +27,6 @@ export function ShoeCard({
 
   // Cuadrícula de 6 tallas estilo tienda QUEST (3 columnas x 2 filas)
   const displaySizes = useMemo(() => {
-    const isWomen = shoe.gender === "Mujer";
     const minS = Math.min(...availableSizes);
     const maxS = Math.max(...availableSizes);
 
@@ -35,7 +37,7 @@ export function ShoeCard({
       return [35, 36, 37, 38, 39, 40];
     }
     return availableSizes.slice(0, 6);
-  }, [availableSizes, shoe.gender]);
+  }, [availableSizes]);
 
   // Talla seleccionada actual (inicia con la primera disponible)
   const [selectedSize, setSelectedSize] = useState(() => {
@@ -66,7 +68,9 @@ export function ShoeCard({
           src={primaryImage}
           alt={shoe.name}
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchpriority={priority ? "high" : "auto"}
+          decoding="async"
         />
 
         {/* Badge de Descuento Rojo en esquina superior izquierda */}
@@ -102,7 +106,7 @@ export function ShoeCard({
           )
         )}
 
-        {/* Botón Flotante Circular Negro para Agregar al Carrito (Igual a la foto QUEST) */}
+        {/* Botón Flotante Circular Negro para Agregar al Carrito (Estilo QUEST) */}
         <button
           type="button"
           onClick={(e) => {
@@ -194,3 +198,5 @@ export function ShoeCard({
     </div>
   );
 }
+
+export const ShoeCard = memo(ShoeCardComponent);

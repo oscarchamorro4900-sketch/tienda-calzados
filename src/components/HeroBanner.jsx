@@ -86,9 +86,11 @@ export function HeroBanner({
           <div className="relative group">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60 bg-slate-800/50">
               <img
-                src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=500&q=75"
                 alt="Sneakers destacados"
                 className="w-full h-64 sm:h-80 object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
               

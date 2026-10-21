@@ -1,16 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy } from 'react';
 import { INITIAL_SHOES } from './data/initialShoes';
 import { Header } from './components/Header';
 import { HeroBanner } from './components/HeroBanner';
 import { FilterBar } from './components/FilterBar';
 import { ShoeCard } from './components/ShoeCard';
-import { ShoeDetailModal } from './components/ShoeDetailModal';
-import { CartDrawer } from './components/CartDrawer';
-import { AdminUploaderModal } from './components/AdminUploaderModal';
-import { StoreSettingsModal } from './components/StoreSettingsModal';
-import { AdminLoginModal } from './components/AdminLoginModal';
-import { EditShoeModal } from './components/EditShoeModal';
-import { PriceManagerModal } from './components/PriceManagerModal';
 import {
   isCloudConfigured,
   fetchShoesFromCloud,
@@ -20,8 +13,17 @@ import {
   subscribeToRealtimeShoes,
   mapRowToShoe
 } from './lib/supabase';
-import { Sparkles, MessageCircle, ShoppingBag, Plus, ArrowUp, Lock, ShieldCheck, Cloud } from 'lucide-react';
+import { Sparkles, MessageCircle, ShoppingBag, Plus, ArrowUp, Lock, ShieldCheck, Cloud, DollarSign } from 'lucide-react';
 import { formatPrice } from './utils/formatCurrency';
+
+// Carga diferida (lazy loading) para reducir drásticamente el peso inicial de la página
+const ShoeDetailModal = lazy(() => import('./components/ShoeDetailModal').then(m => ({ default: m.ShoeDetailModal })));
+const CartDrawer = lazy(() => import('./components/CartDrawer').then(m => ({ default: m.CartDrawer })));
+const AdminUploaderModal = lazy(() => import('./components/AdminUploaderModal').then(m => ({ default: m.AdminUploaderModal })));
+const StoreSettingsModal = lazy(() => import('./components/StoreSettingsModal').then(m => ({ default: m.StoreSettingsModal })));
+const AdminLoginModal = lazy(() => import('./components/AdminLoginModal').then(m => ({ default: m.AdminLoginModal })));
+const EditShoeModal = lazy(() => import('./components/EditShoeModal').then(m => ({ default: m.EditShoeModal })));
+const PriceManagerModal = lazy(() => import('./components/PriceManagerModal').then(m => ({ default: m.PriceManagerModal })));
 
 const STORAGE_KEY_SHOES = 'calzados_catalog_v1';
 const STORAGE_KEY_CART = 'calzados_cart_v1';
@@ -171,7 +173,15 @@ export default function App() {
     fetchShoesFromCloud(storeConfig).then((cloudShoes) => {
       if (!isMounted) return;
       if (cloudShoes && cloudShoes.length > 0) {
-        setShoes(cloudShoes);
+        setShoes((prev) => {
+          if (
+            prev.length === cloudShoes.length &&
+            prev.every((p, idx) => p.id === cloudShoes[idx]?.id && p.price === cloudShoes[idx]?.price && p.updatedAt === cloudShoes[idx]?.updatedAt)
+          ) {
+            return prev;
+          }
+          return cloudShoes;
+        });
       } else if (cloudShoes && cloudShoes.length === 0 && shoes.length > 0) {
         // Inicializar la tabla en Supabase si está vacía
         saveBatchShoesToCloud(shoes, storeConfig);
@@ -206,10 +216,10 @@ export default function App() {
   }, [storeConfig.supabaseUrl, storeConfig.supabaseAnonKey]);
 
   // Mostrar mensaje toast temporal
-  const showToast = (msg) => {
+  const showToast = useCallback((msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 3500);
-  };
+  }, []);
 
   // Filtrado y ordenamiento de zapatos
   const filteredShoes = useMemo(() => {
@@ -259,7 +269,7 @@ export default function App() {
   }, [shoes, searchQuery, selectedCategory, selectedGender, selectedSize, onlyOffers, sortBy]);
 
   // Manejo de Carrito
-  const handleAddToCart = (shoe, chosenSize = null) => {
+  const handleAddToCart = useCallback((shoe, chosenSize = null) => {
     const sizeToUse = chosenSize || shoe.sizes?.[0] || 40;
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
@@ -285,11 +295,11 @@ export default function App() {
     });
 
     showToast(`👟 ¡Añadido al carrito: ${shoe.name} (Talla ${sizeToUse})!`);
-  };
+  }, [showToast]);
 
-  const handleUpdateQuantity = (id, size, newQty) => {
+  const handleUpdateQuantity = useCallback((id, size, newQty) => {
     if (newQty <= 0) {
-      handleRemoveItem(id, size);
+      setCartItems((prev) => prev.filter((item) => !(item.id === id && item.selectedSize === size)));
       return;
     }
     setCartItems((prev) =>
@@ -299,20 +309,20 @@ export default function App() {
           : item
       )
     );
-  };
+  }, []);
 
-  const handleRemoveItem = (id, size) => {
+  const handleRemoveItem = useCallback((id, size) => {
     setCartItems((prev) =>
       prev.filter((item) => !(item.id === id && item.selectedSize === size))
     );
-  };
+  }, []);
 
-  const handleClearCart = () => {
+  const handleClearCart = useCallback(() => {
     setCartItems([]);
-  };
+  }, []);
 
   // Pedido Directo a WhatsApp para un solo par
-  const handleDirectWhatsApp = (shoe, chosenSize = null) => {
+  const handleDirectWhatsApp = useCallback((shoe, chosenSize = null) => {
     const sizeToUse = chosenSize || shoe.sizes?.[0] || 40;
     const currency = storeConfig.currency || "$";
     const cleanNumber = (storeConfig.whatsappNumber || OFFICIAL_WHATSAPP).replace(/[^0-9]/g, '') || OFFICIAL_WHATSAPP;
@@ -327,7 +337,15 @@ export default function App() {
 
     const url = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
-  };
+  }, [storeConfig.currency, storeConfig.whatsappNumber]);
+
+  const handleViewDetails = useCallback((s) => {
+    setDetailModalShoe(s);
+  }, []);
+
+  const handleEditShoeCallback = useCallback((s) => {
+    setEditingShoe(s);
+  }, []);
 
   // Abrir modal de login de admin
   const handleOpenLoginModal = () => {
@@ -521,16 +539,17 @@ export default function App() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
-              {filteredShoes.map((shoe) => (
+              {filteredShoes.map((shoe, idx) => (
                 <ShoeCard
                   key={shoe.id}
                   shoe={shoe}
+                  priority={idx < 4}
                   storeConfig={storeConfig}
-                  onViewDetails={(s) => setDetailModalShoe(s)}
-                  onAddToCart={(s, size) => handleAddToCart(s, size)}
-                  onDirectWhatsApp={(s, size) => handleDirectWhatsApp(s, size)}
+                  onViewDetails={handleViewDetails}
+                  onAddToCart={handleAddToCart}
+                  onDirectWhatsApp={handleDirectWhatsApp}
                   isSellerMode={isSellerMode}
-                  onEditShoe={(s) => setEditingShoe(s)}
+                  onEditShoe={handleEditShoeCallback}
                 />
               ))}
             </div>
@@ -620,85 +639,101 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Modales */}
-      <ShoeDetailModal
-        shoe={detailModalShoe}
-        storeConfig={storeConfig}
-        isOpen={Boolean(detailModalShoe)}
-        onClose={() => setDetailModalShoe(null)}
-        onAddToCart={(s, size) => handleAddToCart(s, size)}
-        onDirectWhatsApp={(s, size) => handleDirectWhatsApp(s, size)}
-        isSellerMode={isSellerMode}
-        onEditShoe={(s) => setEditingShoe(s)}
-      />
+      {/* Modales con Carga Diferida (Lazy Loading) */}
+      <Suspense fallback={null}>
+        {detailModalShoe && (
+          <ShoeDetailModal
+            shoe={detailModalShoe}
+            storeConfig={storeConfig}
+            isOpen={Boolean(detailModalShoe)}
+            onClose={() => setDetailModalShoe(null)}
+            onAddToCart={handleAddToCart}
+            onDirectWhatsApp={handleDirectWhatsApp}
+            isSellerMode={isSellerMode}
+            onEditShoe={handleEditShoeCallback}
+          />
+        )}
 
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onClearCart={handleClearCart}
-        storeConfig={storeConfig}
-      />
+        {isCartOpen && (
+          <CartDrawer
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            cartItems={cartItems}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveItem={handleRemoveItem}
+            onClearCart={handleClearCart}
+            storeConfig={storeConfig}
+          />
+        )}
 
-      <AdminUploaderModal
-        isOpen={isUploaderOpen}
-        onClose={() => setIsUploaderOpen(false)}
-        onAddNewShoes={handleAddNewShoes}
-        storeConfig={storeConfig}
-      />
+        {isUploaderOpen && (
+          <AdminUploaderModal
+            isOpen={isUploaderOpen}
+            onClose={() => setIsUploaderOpen(false)}
+            onAddNewShoes={handleAddNewShoes}
+            storeConfig={storeConfig}
+          />
+        )}
 
-      <StoreSettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        storeConfig={storeConfig}
-        onSaveConfig={(newConfig) => {
-          setStoreConfig(newConfig);
-          showToast("⚙️ Configuración guardada correctamente");
-        }}
-        onResetCatalog={() => {
-          setShoes(INITIAL_SHOES);
-          showToast("🔄 Catálogo restaurado al inicial");
-        }}
-        catalogData={shoes}
-        onImportCatalog={(imported) => setShoes(imported)}
-        onCloudSyncSuccess={(cloudShoes) => {
-          setShoes(cloudShoes);
-          showToast("☁️ ¡Catálogo sincronizado exitosamente con Supabase!");
-        }}
-      />
+        {isSettingsOpen && (
+          <StoreSettingsModal
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+            storeConfig={storeConfig}
+            onSaveConfig={(newConfig) => {
+              setStoreConfig(newConfig);
+              showToast("⚙️ Configuración guardada correctamente");
+            }}
+            onResetCatalog={() => {
+              setShoes(INITIAL_SHOES);
+              showToast("🔄 Catálogo restaurado al inicial");
+            }}
+            catalogData={shoes}
+            onImportCatalog={(imported) => setShoes(imported)}
+            onCloudSyncSuccess={(cloudShoes) => {
+              setShoes(cloudShoes);
+              showToast("☁️ ¡Catálogo sincronizado exitosamente con Supabase!");
+            }}
+          />
+        )}
 
-      {/* Modal de Autenticación de Administrador */}
-      <AdminLoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onSuccessLogin={handleSuccessLogin}
-        correctPassword={String(storeConfig.adminPin || "283113")}
-      />
+        {/* Modal de Autenticación de Administrador */}
+        {isLoginModalOpen && (
+          <AdminLoginModal
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+            onSuccessLogin={handleSuccessLogin}
+            correctPassword={String(storeConfig.adminPin || "283113")}
+          />
+        )}
 
-      {/* Modal de Edición Completa en Modo Maestro */}
-      <EditShoeModal
-        isOpen={Boolean(editingShoe)}
-        shoe={editingShoe}
-        onClose={() => setEditingShoe(null)}
-        onSaveShoe={handleSaveShoe}
-        onDeleteShoe={handleDeleteShoe}
-        storeConfig={storeConfig}
-      />
+        {/* Modal de Edición Completa en Modo Maestro */}
+        {Boolean(editingShoe) && (
+          <EditShoeModal
+            isOpen={Boolean(editingShoe)}
+            shoe={editingShoe}
+            onClose={() => setEditingShoe(null)}
+            onSaveShoe={handleSaveShoe}
+            onDeleteShoe={handleDeleteShoe}
+            storeConfig={storeConfig}
+          />
+        )}
 
-      {/* Modal Gestor Rápido de Precios y Ofertas */}
-      <PriceManagerModal
-        isOpen={isPriceManagerOpen}
-        onClose={() => setIsPriceManagerOpen(false)}
-        shoes={shoes}
-        onSaveBatchPrices={handleSaveBatchPrices}
-        storeConfig={storeConfig}
-        onUpdateStoreConfig={(cfg) => {
-          setStoreConfig(cfg);
-          showToast("⚙️ Moneda y configuración de tienda actualizadas");
-        }}
-      />
+        {/* Modal Gestor Rápido de Precios y Ofertas */}
+        {isPriceManagerOpen && (
+          <PriceManagerModal
+            isOpen={isPriceManagerOpen}
+            onClose={() => setIsPriceManagerOpen(false)}
+            shoes={shoes}
+            onSaveBatchPrices={handleSaveBatchPrices}
+            storeConfig={storeConfig}
+            onUpdateStoreConfig={(cfg) => {
+              setStoreConfig(cfg);
+              showToast("⚙️ Moneda y configuración de tienda actualizadas");
+            }}
+          />
+        )}
+      </Suspense>
 
     </div>
   );

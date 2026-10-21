@@ -129,14 +129,14 @@ export function ShoeCard({
             {shoe.name}
           </h3>
 
-          {/* Precios (Oferta + Tachado) */}
-          <div className="flex items-baseline gap-1.5 flex-wrap mt-1">
-            <span className="font-extrabold text-xs sm:text-sm text-rose-700">
-              {formatPrice(shoe.price, currency)}
+          {/* Precios (Oferta + Tachado) - Diseño Anti-Superposición */}
+          <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 leading-tight">
+            <span className="font-black text-sm sm:text-base text-rose-700 whitespace-nowrap tracking-tight">
+              {formatPrice(shoe.price)}
             </span>
             {shoe.originalPrice && Number(shoe.originalPrice) > Number(shoe.price) && (
-              <span className="text-[10px] sm:text-xs text-slate-400 line-through">
-                {formatPrice(shoe.originalPrice, currency)}
+              <span className="text-[11px] sm:text-xs text-slate-400 line-through font-medium whitespace-nowrap">
+                {formatPrice(shoe.originalPrice)}
               </span>
             )}
           </div>

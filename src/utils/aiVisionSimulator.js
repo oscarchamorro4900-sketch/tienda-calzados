@@ -243,9 +243,33 @@ export async function analyzeShoeImage(file, imageSrc, customApiKey = "") {
     }
   }
 
-  // Generación de copywriting persuasivo para venta por WhatsApp
-  const description = `Increíble modelo en tono ${colorsText}. Diseñado pensando en la comodidad del día a día y máxima durabilidad. ` +
-    `Fabricado en ${material.toLowerCase()}. Ideal para lucir con cualquier estilo en esta temporada.`;
+  // Generación de copywriting comercial competitivo de alta conversión
+  let copyIntro = "";
+  let copyBenefits = "";
+
+  if (category === "Botas") {
+    copyIntro = `Botines de alto impacto y confección reforzada en tono ${colorsText}.`;
+    copyBenefits = `Diseño de soporte ergonómico para el tobillo, suela antideslizante de agarre firme y acabado repelente al agua. El equilibrio perfecto entre estilo robusto, comodidad y distinción para cualquier clima.`;
+    badge = "🍂 Temporada 2027";
+  } else if (category === "Formal") {
+    copyIntro = `Calzado de vestir con porte ejecutivo y acabado fino en tono ${colorsText}.`;
+    copyBenefits = `Plantilla de descanso acolchada que previene el cansancio en jornadas largas. Confeccionado con costuras de alta precisión para proyectar elegancia y seguridad en cada paso.`;
+    badge = "👔 Colección Ejecutiva 2027";
+  } else if (category === "Sandalias") {
+    copyIntro = `Diseño de temporada veraniega con máxima frescura y ligereza en tono ${colorsText}.`;
+    copyBenefits = `Plantilla ultra suave anatómica que abraza el pie y tiras resistentes de ajuste cómodo. Perfectas para disfrutar con total estilo y descanso.`;
+    badge = "☀️ Temporada Verano 2027";
+  } else if (category === "Deportivo") {
+    copyIntro = `Zapatillas deportivas de alto rendimiento y amortiguación reactiva en tono ${colorsText}.`;
+    copyBenefits = `Estructura en malla transpirable que ventila activamente el pie y suela de alta absorción de impacto. Perfectas para entrenar, caminar con comodidad o lucir un look urbano imbatible.`;
+    badge = "⚡ Calidad Premium 2027";
+  } else {
+    copyIntro = `Sneakers urbanos de tendencia moderna y máxima versatilidad en tono ${colorsText}.`;
+    copyBenefits = `Estilo limpio y vanguardista que combina a la perfección con cualquier outfit. Forro interior suave, suela flexible y confección duradera para el día a día.`;
+    badge = "✨ Lo Más Vendido 2027";
+  }
+
+  const description = `${copyIntro} ${copyBenefits} ✨ ¡Pocos pares en stock! Pide tu talla antes de que se agoten.`;
 
   const calculatedOriginal = Math.round((suggestedPrice * 1.25) / 1000) * 1000;
 
@@ -317,19 +341,23 @@ async function callGeminiVision(apiKey, imageBase64) {
   const pureBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
   const mimeType = imageBase64.match(/data:([^;]+);/)?.[1] || "image/jpeg";
 
-  const prompt = `Analiza esta foto de calzado/zapato y devuelve UNICAMENTE un objeto JSON válido (sin markdown ni explicaciones adicionales) con este formato exacto:
-  {
-    "name": "Nombre atractivo comercial del zapato en español",
-    "category": "Deportivo|Casual|Formal|Botas|Sandalias",
-    "gender": "Hombre|Mujer|Unisex",
-    "brand": "Marca estimada o estilo",
-    "price": 139000,
-    "sizes": [38, 39, 40, 41, 42],
-    "material": "Material detallado",
-    "description": "Texto persuasivo de 2 frases para venderlo por WhatsApp",
-    "seasonBadge": "Frase corta de temporada ej: '🔥 Tendencia 2026'"
-  }
-  IMPORTANTE: El precio sugerido debe ser en Pesos Colombianos (COP), un número entero redondeado a miles (por ejemplo: 89000, 119000, 139000, 169000, 189000) acorde al tipo de calzado.`;
+  const prompt = `Eres un copywriter profesional de e-commerce de moda y calzado de alto impacto en Colombia (estilo tiendas de referencia como Quest, Vélez, Nike).
+Analiza esta foto de calzado/zapato y devuelve ÚNICAMENTE un objeto JSON válido (sin markdown ni explicaciones adicionales) con este formato exacto:
+{
+  "name": "Nombre comercial llamativo, moderno y atractivo del zapato (ej: Sneakers Urban Boost Blancos)",
+  "category": "Deportivo|Casual|Formal|Botas|Sandalias",
+  "gender": "Hombre|Mujer|Unisex",
+  "brand": "Marca estimada o estilo exclusivo",
+  "price": 129000,
+  "sizes": [38, 39, 40, 41, 42, 43],
+  "material": "Material detallado de alta calidad (ej: Malla transpirable con suela EVA ultraligera de alta amortiguación)",
+  "description": "Descripción comercial altamente persuasiva, profesional y competitiva (3 a 4 oraciones). Destaca: 1) Estilo y tendencia moderna que eleva cualquier outfit, 2) Confort superior para todo el día y suela amortiguada, 3) Máxima durabilidad de materiales, 4) Una frase de urgencia para pedir por WhatsApp antes de que se agote la talla.",
+  "seasonBadge": "Frase corta de temporada ej: '🔥 Tendencia 2027' o '✨ Edición Especial 2027'"
+}
+REGLAS OBLIGATORIAS:
+- El precio sugerido debe ser en Pesos Colombianos (COP), un número entero redondeado a miles (por ejemplo: 89000, 119000, 129000, 149000, 169000, 189000) acorde al tipo de calzado.
+- La descripción NO debe ser aburrida ni genérica. Debe sonar como una tienda de calzado líder y despertar el deseo de compra inmediato.
+- Temporada: siempre '2027'.`;
 
   const activeModel = await getActiveGeminiModel(apiKey);
 

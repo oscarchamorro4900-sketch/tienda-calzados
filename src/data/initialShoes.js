@@ -13,10 +13,10 @@ export const INITIAL_SHOES = [
     reviewsCount: 34,
     sizes: [38, 39, 40, 41, 42, 43],
     colors: ["Blanco", "Negro", "Gris"],
-    material: "Malla transpirable y suela EVA ultraligera",
-    description: "Zapatillas deportivas urbanas de última tendencia. Suela amortiguada de alta absorción de impacto y tejido transpirable ideal para caminar o entrenar con máximo confort.",
+    material: "Malla transpirable y suela EVA ultraligera de alta densidad",
+    description: "🔥 Estilo urbano imponente y amortiguación reactiva de alto impacto. Desarrolladas con tejido transpirable que mantiene tus pies frescos y suela de alta absorción que elimina el cansancio en caminatas largas o entrenamientos. El calzado versátil indispensable para elevar cualquier outfit casual. ✨ ¡Pocas unidades disponibles!",
     featured: true,
-    seasonBadge: "🔥 Tendencia 2026",
+    seasonBadge: "🔥 Tendencia 2027",
     stock: 12,
     images: [
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
@@ -36,10 +36,10 @@ export const INITIAL_SHOES = [
     reviewsCount: 22,
     sizes: [36, 37, 38, 39],
     colors: ["Negro", "Café Chocolate"],
-    material: "100% Cuero genuino vacuno con elásticos laterales",
-    description: "Botines Chelsea clásicos y versátiles para cualquier outfit de otoño/invierno. Acabado fino, tacón cómodo de 4cm y suela antideslizante reforzada.",
+    material: "100% Cuero genuino vacuno con elásticos laterales reforzados",
+    description: "🍂 Máxima sofisticación y presencia en cada pisada. Confeccionados en 100% cuero vacuno seleccionado con elásticos laterales reforzados y suela antideslizante todoterreno. El botín clásico definitivo para lucir elegante, estilizada y abrigada en cualquier ocasión. ✨ ¡Edición exclusiva de temporada!",
     featured: true,
-    seasonBadge: "🍂 Temporada Otoño/Invierno",
+    seasonBadge: "🍂 Colección 2027",
     stock: 8,
     images: [
       "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=800&q=80"
@@ -58,10 +58,10 @@ export const INITIAL_SHOES = [
     reviewsCount: 18,
     sizes: [39, 40, 41, 42, 43, 44],
     colors: ["Marrón Tostado", "Negro Charol"],
-    material: "Cuero lustrado premium con costuras de precisión",
-    description: "Zapato de vestir estilo Oxford con puntera picada. El calzado imprescindible para eventos formales, oficina o reuniones importantes. Máxima distinción.",
+    material: "Cuero lustrado premium con costuras milimétricas de precisión",
+    description: "👔 Porte ejecutivo, distinción y acabado de alta gama. Elaborados en cuero lustrado con costuras milimétricas y plantilla anatómica acolchada para largas jornadas laborales o eventos sin fatiga. La elección definitiva de quien proyecta éxito y elegancia. ✨ ¡Envío prioritario por WhatsApp!",
     featured: false,
-    seasonBadge: "⭐ Más Vendido",
+    seasonBadge: "👔 Colección Ejecutiva 2027",
     stock: 15,
     images: [
       "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=800&q=80"
@@ -81,9 +81,9 @@ export const INITIAL_SHOES = [
     sizes: [37, 38, 39, 40, 41, 42, 43, 44],
     colors: ["Blanco/Azul", "Rojo/Negro"],
     material: "Cuero sintético de alta resistencia y suela de caucho vulcanizado",
-    description: "Sneakers de bota alta inspirados en el baloncesto de los 80s y 90s. Gran soporte para el tobillo y estética urbana que no pasa desapercibida.",
+    description: "⚡ Inspiración retro basket con estética urbana legendaria. Caña alta con soporte reforzado para el tobillo y suela de caucho vulcanizado de máxima resistencia. Un modelo icónico que destaca donde sea que vayas. ✨ ¡Stock limitado para coleccionistas de estilo!",
     featured: true,
-    seasonBadge: "⚡ Edición Limitada",
+    seasonBadge: "⚡ Edición Limitada 2027",
     stock: 6,
     images: [
       "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80"
@@ -103,9 +103,9 @@ export const INITIAL_SHOES = [
     sizes: [35, 36, 37, 38, 39],
     colors: ["Beige Arena", "Dorado"],
     material: "Yute natural trenzado y tiras suaves ecológicas",
-    description: "Sandalias ligeras de verano con cuña de plataforma de corcho/yute. Plantilla acolchada para caminar todo el día en la playa o la ciudad sin cansancio.",
+    description: "☀️ Frescura radiante, confort absoluto y altura estilizada. Plataforma ultra ligera en yute artesanal con plantilla acolchada que garantiza pisadas suaves durante todo el día. Ideales para vacaciones, fines de semana soleados y outfits veraniegos. ✨ ¡Pide tu talla ahora!",
     featured: false,
-    seasonBadge: "☀️ Verano",
+    seasonBadge: "☀️ Temporada Verano 2027",
     stock: 20,
     images: [
       "https://images.unsplash.com/photo-1562273138-f46be4ebdf33?auto=format&fit=crop&w=800&q=80"
@@ -125,9 +125,9 @@ export const INITIAL_SHOES = [
     sizes: [36, 37, 38, 39, 40, 41, 42, 43],
     colors: ["Blanco Puro"],
     material: "Cuero sintético ecológico hidrófugo y suela ergonómica",
-    description: "Los tenis blancos esenciales que combinan con jeans, shorts, vestidos o pantalones de vestir. Limpieza fácil e interior súper suave.",
+    description: "✨ El básico premium imprescindible que combina con absolutamente todo. Acabado blanco pulcro de fácil limpieza, plantilla ergonómica de descanso y ligereza inigualable. El tenis que nunca pasa de moda para lucir impecable los 7 días de la semana. ✨ ¡Lo más vendido!",
     featured: true,
-    seasonBadge: "✨ Básico Imprescindible",
+    seasonBadge: "✨ Lo Más Vendido 2027",
     stock: 25,
     images: [
       "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80"

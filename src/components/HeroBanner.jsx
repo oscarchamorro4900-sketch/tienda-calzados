@@ -22,11 +22,11 @@ export function HeroBanner({
           
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide">
             <Flame className="w-4 h-4 text-orange-400 animate-pulse" />
-            <span>Colección de Temporada 2026</span>
+            <span>Colección de Temporada 2027</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-            Encuentra tu calzado ideal o <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-300">vende tus zapatos</span> al instante.
+            Encuentra tu calzado ideal, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-300">tus zapatos al instante.</span>
           </h2>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
@@ -99,8 +99,8 @@ export function HeroBanner({
                   <p className="text-xs text-slate-400">Tallas disponibles: 38 - 44</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-400 line-through">$75.00</span>
-                  <div className="text-lg font-black text-emerald-400">$58.00</div>
+                  <span className="text-xs text-slate-400 line-through">$189.000</span>
+                  <div className="text-lg font-black text-emerald-400">$149.000</div>
                 </div>
               </div>
             </div>

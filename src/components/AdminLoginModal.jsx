@@ -5,7 +5,7 @@ export function AdminLoginModal({
   isOpen,
   onClose,
   onSuccessLogin,
-  correctPassword = "CalzadosAdmin2026*"
+  correctPassword = "283113"
 }) {
   if (!isOpen) return null;
 
@@ -17,7 +17,7 @@ export function AdminLoginModal({
     if (e && e.preventDefault) e.preventDefault();
 
     const cleanEntered = String(enteredPassword || "").trim();
-    const cleanCorrect = String(correctPassword || "CalzadosAdmin2026*").trim();
+    const cleanCorrect = String(correctPassword || "283113").trim();
 
     // Solo se permite la contraseña maestra exacta configurada por el dueño
     if (cleanEntered === cleanCorrect) {

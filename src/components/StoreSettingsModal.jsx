@@ -25,7 +25,7 @@ export function StoreSettingsModal({
     whatsappNumber: currentWhatsApp,
     currency: storeConfig.currency || "COP $",
     geminiApiKey: storeConfig.geminiApiKey || "",
-    adminPin: storeConfig.adminPin || "CalzadosAdmin2026*!A",
+    adminPin: storeConfig.adminPin || "283113",
     supabaseUrl: storeConfig.supabaseUrl || "",
     supabaseAnonKey: storeConfig.supabaseAnonKey || ""
   });

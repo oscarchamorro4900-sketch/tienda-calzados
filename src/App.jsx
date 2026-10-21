@@ -54,7 +54,7 @@ export default function App() {
       whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || OFFICIAL_WHATSAPP,
       currency: "COP $",
       geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
-      adminPin: import.meta.env.VITE_ADMIN_PASSWORD || "CalzadosAdmin2026*",
+      adminPin: import.meta.env.VITE_ADMIN_PASSWORD || "283113",
       supabaseUrl: import.meta.env.VITE_SUPABASE_URL || "",
       supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || ""
     };
@@ -63,7 +63,7 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (!parsed.adminPin || parsed.adminPin === "2026") {
+        if (!parsed.adminPin || parsed.adminPin === "2026" || String(parsed.adminPin).includes("CalzadosAdmin")) {
           parsed.adminPin = defaultEnvConfig.adminPin;
         }
         parsed.currency = "COP $";
@@ -673,7 +673,7 @@ export default function App() {
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onSuccessLogin={handleSuccessLogin}
-        correctPassword={String(storeConfig.adminPin || "CalzadosAdmin2026*")}
+        correctPassword={String(storeConfig.adminPin || "283113")}
       />
 
       {/* Modal de Edición Completa en Modo Maestro */}

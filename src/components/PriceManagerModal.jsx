@@ -111,10 +111,16 @@ export function PriceManagerModal({
           };
         } else if (bulkAdjustmentType === "fixed") {
           // Fijar el mismo precio para todos
+          const numOrig = Number(current.originalPrice) || 0;
+          let calcDisc = "";
+          if (numOrig > val) {
+            const pct = Math.round(((numOrig - val) / numOrig) * 100);
+            calcDisc = `${pct}% OFF`;
+          }
           next[shoe.id] = {
             price: val,
             originalPrice: current.originalPrice,
-            discount: current.discount
+            discount: calcDisc
           };
         }
       });
@@ -203,40 +209,56 @@ export function PriceManagerModal({
               </select>
             </div>
 
-            {/* Ajuste Masivo */}
+            {/* Ajuste Masivo Global */}
             <div className="md:col-span-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                 <Percent className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Ajuste Rápido a Todo el Catálogo</span>
+                <span>Ajuste Rápido Global a Todo el Catálogo</span>
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <select
                   value={bulkAdjustmentType}
                   onChange={(e) => setBulkAdjustmentType(e.target.value)}
-                  className="px-2.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700"
+                  className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-amber-500"
                 >
                   <option value="discount">🔥 Aplicar Descuento (% OFF)</option>
                   <option value="increase">📈 Aumentar Precio (+ %)</option>
-                  <option value="fixed">🎯 Mismo Precio para Todos</option>
+                  <option value="fixed">🎯 Fijar Mismo Precio ($)</option>
                 </select>
 
-                <input
-                  type="number"
-                  step="any"
-                  placeholder={bulkAdjustmentType === "fixed" ? "ej: 50" : "ej: 15%"}
-                  value={bulkAdjustmentValue}
-                  onChange={(e) => setBulkAdjustmentValue(e.target.value)}
-                  className="w-24 px-2.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900"
-                />
+                <div className="flex gap-2">
+                  <div className="relative flex-1 sm:w-36">
+                    <input
+                      type="number"
+                      step="any"
+                      placeholder={
+                        bulkAdjustmentType === "fixed"
+                          ? "ej: 129000"
+                          : bulkAdjustmentType === "increase"
+                            ? "ej: 10 (+10%)"
+                            : "ej: 20 (20% OFF)"
+                      }
+                      value={bulkAdjustmentValue}
+                      onChange={(e) => setBulkAdjustmentValue(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={handleApplyBulkAdjustment}
-                  className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shrink-0 shadow-sm"
-                >
-                  Aplicar
-                </button>
+                  <button
+                    type="button"
+                    onClick={handleApplyBulkAdjustment}
+                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold transition-all shrink-0 shadow-sm flex items-center justify-center gap-1.5 active:scale-95"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Aplicar a Todos</span>
+                  </button>
+                </div>
               </div>
+              <p className="text-[11px] text-slate-500 mt-1">
+                {bulkAdjustmentType === "discount" && "Rebaja el porcentaje indicado a todos los zapatos y deja el precio anterior tachado."}
+                {bulkAdjustmentType === "increase" && "Incrementa el porcentaje indicado sobre el precio actual de todos los zapatos."}
+                {bulkAdjustmentType === "fixed" && "Establece exactamente el mismo valor de venta (ej: 129000) a todos los zapatos del catálogo."}
+              </p>
             </div>
           </div>
 

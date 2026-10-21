@@ -46,6 +46,7 @@ export default function App() {
 
   // 2. Estado de Configuración de la Tienda
   const OFFICIAL_WHATSAPP = "573176535909";
+  const OFFICIAL_ADMIN_PASSWORD = "283113";
 
   const [storeConfig, setStoreConfig] = useState(() => {
     const defaultEnvConfig = {
@@ -54,7 +55,7 @@ export default function App() {
       whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || OFFICIAL_WHATSAPP,
       currency: "COP $",
       geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
-      adminPin: import.meta.env.VITE_ADMIN_PASSWORD || "283113",
+      adminPin: OFFICIAL_ADMIN_PASSWORD,
       supabaseUrl: import.meta.env.VITE_SUPABASE_URL || "",
       supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || ""
     };
@@ -64,7 +65,7 @@ export default function App() {
       try {
         const parsed = JSON.parse(saved);
         if (!parsed.adminPin || parsed.adminPin === "2026" || String(parsed.adminPin).includes("CalzadosAdmin")) {
-          parsed.adminPin = defaultEnvConfig.adminPin;
+          parsed.adminPin = OFFICIAL_ADMIN_PASSWORD;
         }
         parsed.currency = "COP $";
         // Si el número guardado es el antiguo número de prueba, actualizar al número oficial

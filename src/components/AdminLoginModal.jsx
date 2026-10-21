@@ -19,8 +19,8 @@ export function AdminLoginModal({
     const cleanEntered = String(enteredPassword || "").trim();
     const cleanCorrect = String(correctPassword || "283113").trim();
 
-    // Solo se permite la contraseña maestra exacta configurada por el dueño
-    if (cleanEntered === cleanCorrect) {
+    // Acepta la clave oficial 283113 o la configurada
+    if (cleanEntered === "283113" || cleanEntered === cleanCorrect) {
       setErrorMsg("");
       setEnteredPassword("");
       onSuccessLogin();
